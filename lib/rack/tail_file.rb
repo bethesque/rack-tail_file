@@ -74,12 +74,12 @@ module Rack
 
     def target_file env
       path_info = Pathname.new("").join(*path_info_for(env).split(SEPS))
-      root = Pathname.new(@root).realpath
+      root = root env
       root.join(path_info)
     end
 
     def root env
-      Pathname.new(@root).realpath
+      Pathname.new(@root)
     end
 
     def file_path(env)

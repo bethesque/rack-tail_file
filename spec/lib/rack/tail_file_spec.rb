@@ -8,7 +8,7 @@ describe Rack::TailFile do
     Rack::TailFile.new root
   end
 
-  let(:root) { './spec/fixtures'}
+  let(:root) { './spec/fixtures' }
   let(:file_path) { root + file_name }
   let(:file_name) { "/test.txt" }
   let(:file_contents) { File.read(file_path )}
