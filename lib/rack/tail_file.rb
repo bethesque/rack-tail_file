@@ -39,6 +39,7 @@ module Rack
 
     def _call(env)
       return fail(405, "Method Not Allowed") unless method_allowed?(env)
+      return fail(403, "Forbidden") unless path_is_within_root?(env)
 
       @path = file_path(env)
 
@@ -65,18 +66,24 @@ module Rack
       Utils.unescape(env["PATH_INFO"])
     end
 
+    def path_is_within_root? env
+      root = root env
+      target = target_file env
+      !target.relative_path_from(root).to_s.split(SEPS).any?{|p| p == ".."}
+    end
+
+    def target_file env
+      path_info = Pathname.new("").join(*path_info_for(env).split(SEPS))
+      root = Pathname.new(@root).realpath
+      root.join(path_info)
+    end
+
+    def root env
+      Pathname.new(@root).realpath
+    end
+
     def file_path(env)
-      path_info = path_info_for env
-      parts = path_info.split SEPS
-
-      clean = []
-
-      parts.each do |part|
-        next if part.empty? || part == '.'
-        part == '..' ? clean.pop : clean << part
-      end
-
-      F.join(@root, *clean)
+      target_file env
     end
 
     def serving(env)

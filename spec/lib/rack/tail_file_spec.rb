@@ -11,11 +11,11 @@ describe Rack::TailFile do
   let(:root) { './spec/fixtures'}
   let(:file_path) { root + file_name }
   let(:file_name) { "/test.txt" }
+  let(:file_contents) { File.read(file_path )}
 
   describe "GET" do
 
     context "when the number of lines required is not specified" do
-      let(:file_contents) { File.read(file_path )}
 
       subject { get file_name }
 
@@ -68,6 +68,30 @@ describe Rack::TailFile do
       it "sets a status of 404" do
         subject
         expect(last_response.status).to eq 404
+      end
+    end
+
+    context "when the file requested is outside the root" do
+      subject { get "../lib/rack/tail_file_spec.rb" }
+
+      it "returns a 403 Forbidden" do
+        subject
+        expect(last_response.status).to eq 403
+      end
+
+      it "does not return the file" do
+        subject
+        expect(last_response.body).to_not eq(file_contents)
+      end
+    end
+
+    context "when the file requested has a path with .. that resolves to a file within the root" do
+
+      subject { get "../fixtures/blah/..#{file_name}" }
+
+      it "returns a 200 Success" do
+        subject
+        expect(last_response.status).to eq 200
       end
     end
   end
