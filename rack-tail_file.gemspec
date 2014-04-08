@@ -8,10 +8,16 @@ Gem::Specification.new do |spec|
   spec.version       = Rack::TailFile::VERSION
   spec.authors       = ["Beth"]
   spec.email         = ["beth@bethesque.com"]
-  spec.description   = %q{Like Rack::File, but it serves the last lines of a file}
-  spec.summary       = %q{A rack app that serves the last lines of a file}
+  spec.description   = %q{This gem is deprecated - see rack-tail}
+  spec.summary       = %q{Deprecated - see rack-tail}
   spec.homepage      = ""
   spec.license       = "MIT"
+
+  spec.post_install_message = <<-MESSAGE
+  !    The rack-tail_file gem has been deprecated and has been replaced by rack-tail.
+  !    See: https://rubygems.org/gems/rack-tail
+  !    And: https://github.com/bethesque/rack-tail
+  MESSAGE
 
   spec.files         = `git ls-files`.split($/)
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
